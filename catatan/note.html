@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catatan - FLD System</title>
+  <link rel="icon" type="image/x-icon" href="../images/icon.jpg" />
+  
+  <!-- Flaticon UI Icons CDN -->
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="n_style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header / Navigasi Atas -->
+    <header class="page-header">
+      <div class="header-left">
+        <a href="../index.html" class="back-link">← KEMBALI KE BERANDA</a>
+        <h1 class="page-title">CATATAN <span class="text-stroke">SAYA</span></h1>
+      </div>
+      <div class="header-actions" id="headerActions" style="display: none;">
+        <button class="btn-secondary" onclick="openFolderModal()"><i class="fi fi-rr-folder-add"></i> BUAT FOLDER</button>
+        <button class="btn-primary" onclick="openNoteModal()"><i class="fi fi-rr-add"></i> TAMBAH CATATAN</button>
+      </div>
+    </header>
+
+    <!-- Peringatan Belum Login -->
+    <div id="authNotice" class="notice-box">
+      <p>Silakan login di <a href="../index.html">halaman utama</a> untuk mengelola catatan Anda.</p>
+    </div>
+
+    <!-- Main Workspace (Folder Navigation & Notes List) -->
+    <div id="mainWorkspace" class="workspace-layout" style="display: none;">
+      
+      <!-- Sidebar Daftar Folder -->
+      <aside class="folder-sidebar">
+        <div class="sidebar-title">
+          <span><i class="fi fi-rr-folder"></i> FOLDER</span>
+        </div>
+        <div id="folderList" class="folder-list">
+          <!-- Folder item akan dirender via JS -->
+        </div>
+      </aside>
+
+      <!-- Grid Catatan -->
+      <main class="notes-content">
+        <div id="noteGrid" class="task-grid">
+          <!-- Kartu catatan akan dirender via JS -->
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Modal Tambah / Edit Catatan -->
+  <div id="noteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="noteModalTitle">TAMBAH CATATAN BARU</h3>
+        <button class="modal-close" onclick="closeNoteModal()">&times;</button>
+      </div>
+      <form id="noteForm" onsubmit="handleNoteSubmit(event)">
+        <input type="hidden" id="noteId" />
+
+        <div class="form-group">
+          <label class="form-label">Folder</label>
+          <div class="custom-dropdown" id="dropdownFolder">
+            <input type="hidden" id="inputFolderId" required />
+            <div class="custom-dropdown-trigger" onclick="toggleDropdown('dropdownFolder')">
+              <span class="selected-value">-- Pilih Folder --</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="custom-dropdown-menu" id="folderOptionsList">
+              <!-- Opsi folder dirender via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Judul Catatan</label>
+          <input type="text" id="inputNoteTitle" class="input-field" required placeholder="Judul catatan..." />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Isi Catatan</label>
+          <textarea id="inputNoteContent" class="input-field textarea-field" rows="6" required placeholder="Tuliskan isi catatan di sini..."></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">SIMPAN CATATAN</button>
+          <button type="button" class="btn btn-secondary" onclick="closeNoteModal()">BATAL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Kelola / Buat Folder -->
+  <div id="folderModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>BUAT FOLDER BARU</h3>
+        <button class="modal-close" onclick="closeFolderModal()">&times;</button>
+      </div>
+      
+      <form onsubmit="handleAddFolder(event)">
+        <div class="form-group">
+          <label class="form-label">Nama Folder</label>
+          <input type="text" id="newFolderInput" class="input-field" placeholder="Contoh: Materi, Presentasi, Proyek" required />
+        </div>
+
+        <div class="btn-group" style="margin-top: 1.5rem;">
+          <button type="submit" class="btn btn-primary">BUAT</button>
+          <button type="button" class="btn btn-secondary" onclick="closeFolderModal()">BATAL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="n_script.js"></script>
+</body>
+</html>

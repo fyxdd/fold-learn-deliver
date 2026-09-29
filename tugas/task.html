@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kumpulan Tugas - FLD System</title>
+  <link rel="icon" type="image/x-icon" href="../images/icon.jpg" />
+  
+  <!-- Flaticon UI Icons CDN -->
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="t_style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header / Navigasi Atas -->
+    <header class="page-header">
+      <div class="header-left">
+        <a href="../index.html" class="back-link">← KEMBALI KE BERANDA</a>
+        <h1 class="page-title">DAFTAR <span class="text-stroke">TUGAS</span></h1>
+      </div>
+      <div class="header-actions" id="headerActions" style="display: none;">
+        <button class="btn-primary" onclick="openTaskModal()">+ TAMBAH TUGAS</button>
+      </div>
+    </header>
+
+    <!-- Peringatan Belum Login -->
+    <div id="authNotice" class="notice-box">
+      <p>Silakan login di <a href="../index.html">halaman utama</a> untuk melihat dan mengelola tugas Anda.</p>
+    </div>
+
+    <!-- Kontainer Daftar Tugas -->
+    <div id="taskGrid" class="task-grid" style="display: none;">
+      <!-- Kartu tugas akan dimuat secara dinamis via JS -->
+    </div>
+  </div>
+
+  <!-- Modal Tambah / Edit Tugas -->
+  <div id="taskModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">TAMBAH TUGAS BARU</h3>
+        <button class="modal-close" onclick="closeTaskModal()">&times;</button>
+      </div>
+      <form id="taskForm" onsubmit="handleTaskSubmit(event)">
+        <input type="hidden" id="taskId" />
+        
+        <!-- Field Mata Pelajaran dengan Custom Dropdown & Tombol Kelola -->
+        <div class="form-group">
+          <label class="form-label">Mata Pelajaran</label>
+          <div class="field-with-action">
+            <input type="hidden" id="inputSubject" required />
+            <div class="custom-dropdown" id="dropdownSubject">
+              <div class="custom-dropdown-trigger" onclick="toggleDropdown('dropdownSubject')">
+                <span class="selected-value">Pilih Mata Pelajaran</span>
+                <span class="arrow">▼</span>
+              </div>
+              <div class="custom-dropdown-menu" id="subjectOptionsList">
+                <!-- Pilihan akan dimuat via JS -->
+              </div>
+            </div>
+            <button type="button" class="btn-icon-action" onclick="openSubjectModal()" title="Kelola Mata Pelajaran">
+              <i class="fi fi-rr-settings"></i> Kelola
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Judul Tugas / Deskripsi</label>
+          <input type="text" id="inputTitle" class="input-field" required placeholder="Contoh: Tugas Halaman 30-31, Bab 2">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tenggat Waktu (Deadline)</label>
+          <input type="date" id="inputDeadline" class="input-field" required>
+        </div>
+
+        <!-- Custom Dropdown untuk Status -->
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <input type="hidden" id="inputStatus" value="Belum Selesai" />
+          <div class="custom-dropdown" id="dropdownStatus">
+            <div class="custom-dropdown-trigger" onclick="toggleDropdown('dropdownStatus')">
+              <span class="selected-value">Belum Selesai</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="custom-dropdown-menu">
+              <div class="custom-dropdown-item selected" onclick="selectStatusOption('Belum Selesai')">Belum Selesai</div>
+              <div class="custom-dropdown-item" onclick="selectStatusOption('Proses')">Sedang Dikerjakan</div>
+              <div class="custom-dropdown-item" onclick="selectStatusOption('Selesai')">Selesai</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Link Pengumpulan / Lampiran (Opsional)</label>
+          <input type="url" id="inputLink" class="input-field" placeholder="https://github.com/... atau Drive">
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">SIMPAN</button>
+          <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">BATAL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Kelola Mata Pelajaran -->
+  <div id="subjectModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>KELOLA MATA PELAJARAN</h3>
+        <button class="modal-close" onclick="closeSubjectModal()">&times;</button>
+      </div>
+      
+      <form onsubmit="handleAddSubject(event)" class="add-subject-form">
+        <div class="form-group inline-group">
+          <input type="text" id="newSubjectInput" class="input-field" placeholder="Nama Mapel Baru (contoh: Biologi)" required />
+          <button type="submit" class="btn btn-primary btn-inline">+ TAMBAH</button>
+        </div>
+      </form>
+
+      <label class="form-label" style="margin-top: 1.5rem;">Daftar Mapel Tersedia:</label>
+      <div id="subjectList" class="subject-list-box">
+        <!-- List mapel akan dirender via JS -->
+      </div>
+
+      <div class="btn-group" style="margin-top: 1.5rem;">
+        <button type="button" class="btn btn-secondary" onclick="closeSubjectModal()">TUTUP</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="t_script.js"></script>
+</body>
+</html>
